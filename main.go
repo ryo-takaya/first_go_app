@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 )
-　
+
 func parseRequest(w http.ResponseWriter, r *http.Request) {
   e := r.ParseForm()
   log.Println(e)
