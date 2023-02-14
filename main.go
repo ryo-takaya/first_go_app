@@ -14,10 +14,6 @@ import (
 	"fmt"
 )
 
-type Emb struct {
-	TodoList []string
-}
-
 func createSessionId() int64 {
   n, err := rand.Int(rand.Reader, big.NewInt(100000000000000))
   if err != nil {
@@ -42,21 +38,21 @@ func indexAction(w http.ResponseWriter, r *http.Request) {
 
   cookie, _ := r.Cookie("SESID")
   if cookie == nil {
-      sessionId := strconv.FormatInt(createSessionId(), 10)
-      cookie := &http.Cookie{
-          Name: "SESID",
-          Value: sessionId,
-       }
-      fp, err := os.Create("./tmp/" + sessionId + ".txt")
-      if err != nil {
-          log.Println(err)
-          return
-      }
-      defer fp.Close()
+    sessionId := strconv.FormatInt(createSessionId(), 10)
+    cookie := &http.Cookie{
+      Name: "SESID",
+      Value: sessionId,
+    }
+  fp, err := os.Create("./tmp/" + sessionId + ".txt")
+  if err != nil {
+     log.Println(err)
+      return
+  }
+  defer fp.Close()
 
 
-     http.SetCookie(w, cookie)
-     t.Execute(w, nil)
+  http.SetCookie(w, cookie)
+   t.Execute(w, nil)
   }else {
     data, _ := ioutil.ReadFile("./tmp/" + cookie.Value + ".txt")
     if data == nil {
