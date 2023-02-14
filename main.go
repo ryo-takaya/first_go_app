@@ -7,9 +7,11 @@ import (
     "io"
 	"log"
 	"net/http"
-	"fmt"
 	"html/template"
 	"strconv"
+	"io/ioutil"
+	"strings"
+	"fmt"
 )
 
 func createSessionId() int64 {
@@ -21,12 +23,13 @@ func createSessionId() int64 {
 }
 
 func addAction(w http.ResponseWriter, r *http.Request) {
-  e := r.ParseForm()
-  data := r.Form.Get("data")
-  store := newMemoryDb()
-  store.add(Todo(data))
-  fmt.Println(store.store)
-  io.WriteString(w, data)
+  r.ParseForm()
+  requestData := r.Form.Get("data")
+  sessionId, _ := r.Cookie("SESID")
+  fp, _ := os.OpenFile("./tmp/" + sessionId.Value + ".txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0664)
+  defer fp.Close()
+  fmt.Fprintln(fp, requestData + ",")
+  io.WriteString(w, requestData)
 }
 
 func indexAction(w http.ResponseWriter, r *http.Request) {
