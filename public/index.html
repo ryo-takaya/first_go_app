@@ -34,9 +34,12 @@
             <input type="submit" value="送信" onclick="handleOnEvent(event)">
         </form>
     </div>
+
     <div class="todo">
         <ul class="todo__list">
-
+            {{ range . }}
+              <li>{{- . }}</li>
+            {{ end }}
         </ul>
     </div>
 </div>
