@@ -3,6 +3,7 @@ package main
 import (
     "crypto/rand"
     "math/big"
+    "os"
     "io"
 	"log"
 	"net/http"
@@ -21,7 +22,6 @@ func createSessionId() int64 {
 
 func addAction(w http.ResponseWriter, r *http.Request) {
   e := r.ParseForm()
-  log.Println(e)
   data := r.Form.Get("data")
   store := newMemoryDb()
   store.add(Todo(data))
@@ -35,13 +35,22 @@ func indexAction(w http.ResponseWriter, r *http.Request) {
 
   cookie, _ := r.Cookie("SESID")
   if cookie == nil {
+      sessionId := strconv.FormatInt(createSessionId(), 10)
       cookie := &http.Cookie{
           Name: "SESID",
-          Value: strconv.FormatInt(createSessionId(), 10),
+          Value: sessionId,
        }
+      fp, err := os.Create("./tmp/" + sessionId + ".txt")
+      if err != nil {
+          log.Println(err)
+          return
+      }
+      defer fp.Close()
+
 
    http.SetCookie(w, cookie)
   }
+
     t.Execute(w, nil)
 }
 
