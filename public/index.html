@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<style>
+    .container {
+        max-width: 650px;
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    h1 {
+        max-width: 550px;
+        font-size: 70px;
+    }
+
+    li {
+        font-weight: bold;
+    }
+</style>
+
+
+<body>
+<div class="container">
+    <h1>
+        TODO LIST
+    </h1>
+    <div class="add__form">
+        <form action="/" method="post">
+            <input type="text" class="todo__body">
+            <input type="submit" value="送信" onclick="handleOnEvent(event)">
+        </form>
+    </div>
+    <div class="todo">
+        <ul class="todo__list">
+
+        </ul>
+    </div>
+</div>
+<script>
+    function handleOnEvent (e){
+        e.preventDefault()
+
+        const body = (document.getElementsByClassName('todo__body')[0]).value
+        if (body.length === 0) {
+            return
+        }
+        const requestData = "data=" + body
+        let request = new XMLHttpRequest();
+        request.open('POST', '/add');
+        request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
+        request.send(requestData)
+        request.addEventListener("load", function(){
+            const list = document.createElement('li')
+            list.innerHTML = this.response
+            const ul = document.getElementsByClassName('todo__list')[0]
+            ul.appendChild(list);
+            document.getElementsByClassName('todo__body')[0].value = ''
+        }, false);
+    }
+</script>
+</body>
+
+</html>
